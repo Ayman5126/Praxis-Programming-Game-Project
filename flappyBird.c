@@ -125,7 +125,7 @@ void selectBirdColor() {
         "Enter choice: ");
 
     scanf("%d", &colorChoice);
-    switch (colorChoice) {
+    switch (colorChoice) {                 //depending on user's input in chooses between the cases which chooses the color of the bird
         case 1: strcpy(birdColorCode, Green); break;
         case 2: strcpy(birdColorCode, Red); break;
         case 3: strcpy(birdColorCode, blue); break;
@@ -173,7 +173,6 @@ void ShowMenu() {
 
 // Function to draw the game board
 void drawBoard() {
-    SetConsoleOutputCP(65001);
     char buff[5000];                                // Buffer to hold the game board
     strcpy(buff, "\e[17A");                         // Move cursor up 17 lines
 
@@ -406,6 +405,7 @@ void ShowEndScreen() {
 
 // Main function
 int main() {
+    SetConsoleOutputCP(65001);
     srand(time(NULL));                         
     system("title \" Flappy Bird\"");
 
