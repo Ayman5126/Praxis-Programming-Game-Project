@@ -10,7 +10,7 @@
 #define screenWidth  32                              // Game board width
 #define screenHieght 16                              // Game board height
 #define pipeCount    4                               // Number of pipes
-#define qKey         0x51                            // Windows virtual key code for the letter 'Q'
+#define cKey         0x43                            // Windows virtual key code for the letter 'c'
 
 // colors variable declaration
 #define Red         "\e[31m"                        
@@ -47,7 +47,6 @@ void Pipes();
 void collisionCheck();                                      // test for collisions
 void ShowMenu();                                  
 void ShowEndScreen();                             
-
 
 
 
@@ -148,7 +147,12 @@ void selectBirdColor() {
 void ShowMenu() {
     while (1) {
         printf("\n=== Flappy Bird Menu ===\n");
-        printf(" 1. Set Difficulty \n 2. Select Pipe Color \n 3. Select Bird Color \n 4. Start Game \nEnter choice: ");
+        printf(" 1. Set Difficulty \n"
+            " 2. Select Pipe Color \n"
+            " 3. Select Bird Color \n"
+            " 4. Start Game \n"
+            " 5. Exit Game \n"
+            "Enter choice: ");
         scanf("%d", &choice);
 
         switch (choice) {                     //user chooses weather it wants to start game directly with deafault settings or customize
@@ -158,6 +162,7 @@ void ShowMenu() {
             case 4:
                 printf("Starting game — Speed: %dms, Distance: %d blocks.\n", gameSpeed, pipeDistance);
                 return;
+            case 5: exit(0);    
             default:
                 printf("Invalid choice. Please try again.\n");
         }
@@ -340,13 +345,41 @@ void UpdateScore() {
     }
 }
 
+// Function to load the High Score
+int loadHighScore() {
+    FILE *file = fopen("highscore.txt", "r");
+    int highscore = 0;
+
+    if (file == NULL) {
+        // No highscore file exists yet
+        return 0;
+    }
+
+    fscanf(file, "%d", &highscore);
+    fclose(file);
+    return highscore;
+}
+
+//Function to save the high score
+void saveHighScore(int score) {
+    FILE *file = fopen("highscore.txt", "w");
+    if (file == NULL) {
+        printf("Error saving high score!\n");
+        return;
+    }
+    fprintf(file, "%d", score);
+    fclose(file);
+}
+
+
 // Function to show the end screen
 void ShowEndScreen() {
-    Beep(880, 300);  // A5
-    Beep(659, 300);  // E5
-    Beep(880, 300);  // A5
-    Beep(659, 300);  // E5
-    Beep(440, 600);  // A4
+
+    Beep(880, 300);  
+    Beep(659, 300);  
+    Beep(880, 300);  
+    Beep(659, 300);  
+    Beep(440, 600);  
 
     system("cls");                           
     printf("\n");
@@ -359,7 +392,15 @@ void ShowEndScreen() {
     printf("   |_|   |__| |__||_______|   |_______| |__|   |____| |________|\n");
     printf("\n");
     printf("Thank you for playing!\n");
-    printf("Final Score: %d\n", score);
+    printf("Your Score: %d\n", score);
+    int highScore = loadHighScore();
+    if (score > highScore) {                        //checks score vs highscore
+        printf("New High Score! 🎉 %d\n", score);
+        saveHighScore(score);
+    } else {
+        printf("High Score: %d\n", highScore);
+    }
+
     exit(0);                                      // Exit the game
 }
 
@@ -380,19 +421,19 @@ int main() {
     }
 
     int frame = 0;                            // Variable to keep passed frames
-    printf("Press UP arrow button to jump and Q to quit.\n");
+    printf("Press space bar to jump and c to Close.\n");
 
     while (1) {
-        if (GetAsyncKeyState(VK_UP)) {         // If the user presses the up arrow
-            bird.y -= 2;                      // Move the bird up 2 COORDSels
+        if (GetAsyncKeyState(VK_SPACE)) {         // If the user presses the space bar
+            bird.y -= 2;                      // Move the bird up 2 pixels
             Beep(1000, 50);
         }
-        if (GetAsyncKeyState(qKey)) {        // If the user presses Q
+        if (GetAsyncKeyState(cKey)) {        // If the user presses c
             break;
         }
 
         if (frame == 2) {                    // If it's the third frame
-            bird.y++;                        // Drop the bird by 1 COORDSel
+            bird.y++;                        // Drop the bird by 1 pixel
             for (int i = 0; i < 3; i++) {    // Move the pipes forward
                 pipes[i].x--;
             }
