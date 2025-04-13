@@ -53,8 +53,8 @@ void ShowEndScreen();
 //function to set difficulty
 void setDifficulty() {
     int difficultyChoice;
-    printf("Select Difficulty: \n" 
-        " 1. Easy (200ms, 20 blocks) \n "
+    printf("\nSelect Difficulty: \n" 
+        "  1. Easy (200ms, 20 blocks) \n "
         " 2. Medium (150ms, 15 blocks) \n "
         " 3. Hard (100ms, 10 blocks) \n "
         " 4. Custom \n "
@@ -82,7 +82,7 @@ void setDifficulty() {
 //functiom to set pipe color
 void selectPipeColor() { 
     int colorChoice;
-    printf("Select Pipe Color: \n "
+    printf("\nSelect Pipe Color: \n "
         " 1. Green \n "
         " 2. Red \n "
         " 3. Blue \n "
@@ -114,7 +114,7 @@ void selectPipeColor() {
 //function to set bird color
 void selectBirdColor() {
     int colorChoice;
-    printf("Select Bird Color: \n "
+    printf("\nSelect Bird Color: \n "
         " 1. Green \n "
         " 2. Red \n "
         " 3. Blue \n "
@@ -425,8 +425,9 @@ int main() {
 
     while (1) {
         if (GetAsyncKeyState(VK_SPACE)) {         // If the user presses the space bar
+            Beep(500, 50);
             bird.y -= 2;                      // Move the bird up 2 pixels
-            Beep(1000, 50);
+            
         }
         if (GetAsyncKeyState(cKey)) {        // If the user presses c
             break;
