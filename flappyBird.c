@@ -1,16 +1,16 @@
 //Flappy Bird
 
 //Headers and Variables being declared
-#include <windows.h>                                // Header for Windows interaction
-#include <stdlib.h>                                 // Header for standard functions
-#include <string.h>                                 // Header for string manipulation
-#include <stdio.h>                                  // Header for reading and writing
-#include <time.h>                                   // Header for time interaction
+#include <string.h>                                 
+#include <stdlib.h>                                 
+#include <windows.h>                                
+#include <time.h>                                   
+#include <stdio.h>                                  
 
 #define screenWidth  32                              // Game board width
 #define screenHieght 16                              // Game board height
-#define pipeCount   4                                // Number of pipes
-#define qKey        0x51                             // Windows virtual key code for the letter 'Q'
+#define pipeCount    4                               // Number of pipes
+#define qKey         0x51                            // Windows virtual key code for the letter 'Q'
 
 // colors variable declaration
 #define Red         "\e[31m"                        
@@ -19,16 +19,16 @@
 #define blue        "\e[34m"                        
 #define magenta     "\e[35m"                        
 #define white       "\e[37m"                        
-#define noColor     "\e[0m"                         // No color (reset)
+#define noColor     "\e[0m"                           // No color (reset)
 
 // creating coordinates
 typedef struct {
     int x;
     int y;
-} PIX;
+} COORDS;
 
-PIX bird;
-PIX pipes[4];
+COORDS bird;
+COORDS pipes[4];
 
 //variables
 int score = 0;     
@@ -36,15 +36,15 @@ int customSpeed;
 int customDistance;
 int choice;
 char customColor[10];
-int gameSpeed = 100; // Default game speed in milliseconds
-int pipeDistance = 15; // Default distance between pipes
-char pipeColorCode[] = Green; // Default pipe color: green
-char birdColorCode[] = yellow; // Default bird color: yellow
+int gameSpeed = 100;                                 // Default game speed in milliseconds
+int pipeDistance = 15;                               // Default distance between pipes
+char pipeColorCode[] = Green;                        // Default pipe color: green
+char birdColorCode[] = yellow;                       // Default bird color: yellow
 
 // Function declarations
-void Draw();                                        // draws the game board
+void drawBoard();                                         // draws the game board
 void Pipes();                                    
-void HitTest();                                     // test for collisions
+void collisionCheck();                                      // test for collisions
 void ShowMenu();                                  
 void ShowEndScreen();                             
 
@@ -167,7 +167,8 @@ void ShowMenu() {
 }
 
 // Function to draw the game board
-void Draw() {
+void drawBoard() {
+    SetConsoleOutputCP(65001);
     char buff[5000];                                // Buffer to hold the game board
     strcpy(buff, "\e[17A");                         // Move cursor up 17 lines
 
@@ -191,9 +192,9 @@ void Draw() {
                         pipes[i].y == y + 3 ||
                         pipes[i].y == y - 3
                     )
-                ) {    //this is to draw the pipes in the selected color
-                    strcat(buff, pipeColorCode);    // Add selected pipe color
-                    strcat(buff, "[]");
+                ) {    //this is to construct the pipes in the selected color
+                    strcat(buff, pipeColorCode);    // Add selected pipe color 
+                    strcat(buff, "■■");                    
                     strcat(buff, noColor);               // Reset color
                     goto bottom;
                 } else if (
@@ -212,7 +213,7 @@ void Draw() {
                     )
                 ) {
                     strcat(buff, pipeColorCode);    
-                    strcat(buff, "][");
+                    strcat(buff, "■■");
                     strcat(buff, noColor);            
                     goto bottom;
                 } else if (
@@ -310,7 +311,7 @@ void Pipes() {
 }
 
 // Function to test for collisions with the floor or the pipes
-void HitTest() {
+void collisionCheck() {
     if (bird.y == screenHieght) {                      // If the bird hits the ground
         ShowEndScreen();
     }
@@ -379,11 +380,11 @@ int main() {
     }
 
     int frame = 0;                            // Variable to keep passed frames
-    printf("Press UP arrow to jump and Q to quit.\n");
+    printf("Press UP arrow button to jump and Q to quit.\n");
 
     while (1) {
         if (GetAsyncKeyState(VK_UP)) {         // If the user presses the up arrow
-            bird.y -= 2;                      // Move the bird up 2 pixels
+            bird.y -= 2;                      // Move the bird up 2 COORDSels
             Beep(1000, 50);
         }
         if (GetAsyncKeyState(qKey)) {        // If the user presses Q
@@ -391,7 +392,7 @@ int main() {
         }
 
         if (frame == 2) {                    // If it's the third frame
-            bird.y++;                        // Drop the bird by 1 pixel
+            bird.y++;                        // Drop the bird by 1 COORDSel
             for (int i = 0; i < 3; i++) {    // Move the pipes forward
                 pipes[i].x--;
             }
@@ -399,8 +400,8 @@ int main() {
             frame = 0;                      // Reset the frame counter
         }
 
-        HitTest();                         // Test for collisions
-        Draw();                            // Draw the game
+        collisionCheck();                  // Test for collisions
+        drawBoard();                       // Draw the game
         Pipes();                           // Update the pipes
         frame++;
         Sleep(gameSpeed);                  // Wait based on user-defined speed
